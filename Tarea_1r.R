@@ -93,12 +93,11 @@ prop.table(table(df$Nivel.Desarrollo))*100
 ## Pregunta 2
 
 ### Parte a
-library(ggplot2)
 ggplot(df, aes(Ingreso,
                Indice.Criminalidad,
                color = Ciudad)) +
   geom_point(size = 4) +
-  labs(title = "Ingreso vs Calidad de aire",
+  labs(title = "Ingreso vs Criminalidad",
        x = "Ingreso (USD)",
        y = "Indice de Criminalidad")
 
