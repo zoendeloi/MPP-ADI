@@ -1,0 +1,194 @@
+---
+title: "Tarea 2"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+### Análisis de Datos I
+
+*Enzo Loiza B. - 23 de Abril 2024*
+
+## Introducción
+
+Consideramos un extracto de las respuestas de la Encuesta de Caracterización Socioeconómica CASEN de 2017 adjunta en el archivo `casen.dta` con las siguientes variables:
+
+| Variables | Descripción                       |
+|-----------|-----------------------------------|
+| `region`  | Número de la región               |
+| `comuna`  | Código de la Comuna               |
+| `tot_hog` | Total de hogares en la vivienda   |
+| `tot_per` | Total de personas en el hogar     |
+| `tot_nuc` | Total de núcleos en el hogar      |
+| `sexo`    | 1 (Hombre), 2 (Mujer)             |
+| `edad`    | Edad en años                      |
+| `ecivil`  | Estado civil                      |
+| `e9te`    | Tipo de enseñanza                 |
+| `s5`      | Edad al tener el primer hijo      |
+| `s12`     | Sistema de salud al que pertenece |
+| `qaut`    | Quintil autónomo nacional         |
+
+: Variables a utilizar de la Encuesta CASEN 2017
+
+## Pasos previos
+
+Abrimos las librerías necesarias para el análisis.
+
+```{r}
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+library(ggthemes)
+```
+
+Luego leemos los datos de la encuesta y hacemos una primera vista de ellos.
+
+```{r}
+db <- read.csv('casen.csv')
+head(db)
+```
+
+## Pregunta 1
+
+**a.** Filtramos usando el comando `filter` de la base de datos, sólo las personas de la Región de Magallanes y la Antártica Chilena. De acuerdo al Libro de Códigos de la CASEN, esta región corresponde al número 12.
+
+```{r}
+magallanes <- filter(db, region == 12)
+head(magallanes)
+```
+
+Luego, usamos la librería `dplyr` para, en cadena, hacer el reporte de mínimo, máximo, media y desviación estándar de la variable `tot_hog` (número de hogares por vivienda) respecto de `qaut` (quintil autónomo nacional).
+
+```{r}
+resumen <- magallanes %>%
+  group_by(qaut) %>%
+  summarise(
+    Minimo = min(tot_hog),
+    Maximo = max(tot_hog),
+    Media = mean(tot_hog),
+    Desviacion_Estandar = sd(tot_hog)
+  )
+
+resumen
+```
+
+**b.** Sin considerar los filtros anteriores, reportamos la edad media de las personas al tener su primer hijo. Acá es importante restar de la base de datos a quienes aparecen como `NA's`, pues corresponden en su mayoría a personas que no (o aún no) tienen hijos.
+
+Primero realizamos una vista de cómo se comportan los datos:
+
+```{r}
+db$sexo <- as.factor(db$sexo)
+ggplot(db, aes(x = s5, fill = sexo)) +
+  geom_histogram()
+```
+
+Esto nos indica que además de los 97067 casos sin edad reportada, existen también algunos casos donde la edad se dispara. Generalmente los 99 también son instancias sin datos, por lo que es necesario verificar si se trata de ellos.
+
+```{r}
+db %>% filter(s5 > 75) %>% # filtramos por una edad prudente de 75
+  summarise(
+    min = min(s5),
+    max = max(s5),
+    mean = mean(s5),
+    n = length(s5)
+  )
+```
+
+Como se comprobó, que es así, ahora realizamos los filtros que corresponden para obtener la media de edad:
+
+```{r}
+primer_hijo_1 <- db %>%
+  filter(s5 != 99) %>%
+  summarise(
+    Media_1 = mean(s5, na.rm = TRUE)
+)
+
+primer_hijo_1
+```
+
+Ahora filtramos seleccionando todas las mujeres casadas (de acuerdo al Libro de Códigos, corresponde al 2) que tuvieron enseñanza básica. En el mismo documento corresponde a las personas que:
+
+-   han tenido más estudios que Educación Básica, es decir superan la educación parvularia y en el filtro se entiende como `e9te != 10` ,
+
+-   se pueden clasificar, es decir `e9te != 77`,
+
+-   y no son blancos.
+
+Luego,
+
+```{r}
+primer_hijo_2 <- db %>% filter(ecivil == 2) %>%
+  filter(sexo == 2, na.rm = TRUE) %>%
+  filter(e9te != 10) %>%
+  filter(e9te != 77) %>%
+  filter(s5 != 99) %>%
+  summarise(
+    Media_2 = mean(s5, na.rm = TRUE)
+  )
+
+primer_hijo_2
+```
+
+Que es ligeramente menor que la media de edad a nivel global. Esto al parecer tiene que ver con que un gran porcentaje de personas tiene los datos de colegiatura en blanco. Esto se explica con la siguiente tabla:
+
+```{r}
+db %>% filter(ecivil == 2 ) %>%
+  filter(s5 != 99) %>%
+  group_by(e9te) %>%
+  summarise(mean = mean(s5, na.rm = TRUE),
+            n = length(s5))
+```
+
+## Pregunta 2
+
+**a.** Se pregunta por la probabilidad de que una persona tenga sistema de previsión FONASA de cualquier grupo.
+
+```{r}
+personas_fonasa <- filter(db, s12 %in% 1:5)
+total_personas <- nrow(db)
+total_fonasa <- nrow(personas_fonasa)
+
+probabilidad_fonasa <- total_fonasa / total_personas
+print(paste("Probabilidad de tener FONASA:", probabilidad_fonasa))
+```
+
+**b.** Estimamos la cantidad de núcleos en el hogar que reportan las personas que se encuentran en el 10% inferior de la muestra del siguiente modo.
+
+Primero ordenamos la base de datos en orden ascendente respecto de la variable `tot_nuc` , y luego identificamos el 10% inferior de la muestra de la base,
+
+```{r}
+db_ascendente <- arrange(db, tot_nuc)
+
+inferior <- round(0.1*nrow(db_ascendente))
+```
+
+Luego, seleccionamos el 10% inferior y obtenemos los datos de esta muestra
+
+```{r}
+db_inf <- db_ascendente[1:inferior, ]
+db_inf %>% summarise(
+  min = min(tot_nuc),
+  max = max(tot_nuc),
+  mean = mean(tot_nuc)
+)
+```
+
+Es decir, el 10% inferior de la muestra tiene un solo núcleo por vivienda. Esto también podemos graficarlo del siguiente modo.
+
+```{r}
+ggplot(db_ascendente,
+       aes(x = tot_nuc)) +
+  geom_histogram(fill = 'yellow',
+                 alpha = .5) +
+  geom_histogram(data = db_inf,
+                 aes(x = tot_nuc),
+                 fill = 'blue',
+                 alpha = .5) +
+  labs(title = "Distribución de Núcleos por vivienda",
+       x = "Total de núcleos por vivienda",
+       y = "Cantidad") + 
+  theme_classic()
+```
+
+*Disponible en html y en [GitHub](https://github.com/zoendeloi/MPP-ADI).*

@@ -1,0 +1,399 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Tarea 2},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Tarea 2}
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+\maketitle
+
+\hypertarget{anuxe1lisis-de-datos-i}{%
+\subsubsection{Análisis de Datos I}\label{anuxe1lisis-de-datos-i}}
+
+\emph{Enzo Loiza B. - 23 de Abril 2024}
+
+\hypertarget{introducciuxf3n}{%
+\subsection{Introducción}\label{introducciuxf3n}}
+
+Consideramos un extracto de las respuestas de la Encuesta de
+Caracterización Socioeconómica CASEN de 2017 adjunta en el archivo
+\texttt{casen.dta} con las siguientes variables:
+
+\begin{longtable}[]{@{}ll@{}}
+\caption{Variables a utilizar de la Encuesta CASEN 2017}\tabularnewline
+\toprule\noalign{}
+Variables & Descripción \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Variables & Descripción \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{region} & Número de la región \\
+\texttt{comuna} & Código de la Comuna \\
+\texttt{tot\_hog} & Total de hogares en la vivienda \\
+\texttt{tot\_per} & Total de personas en el hogar \\
+\texttt{tot\_nuc} & Total de núcleos en el hogar \\
+\texttt{sexo} & 1 (Hombre), 2 (Mujer) \\
+\texttt{edad} & Edad en años \\
+\texttt{ecivil} & Estado civil \\
+\texttt{e9te} & Tipo de enseñanza \\
+\texttt{s5} & Edad al tener el primer hijo \\
+\texttt{s12} & Sistema de salud al que pertenece \\
+\texttt{qaut} & Quintil autónomo nacional \\
+\end{longtable}
+
+\hypertarget{pasos-previos}{%
+\subsection{Pasos previos}\label{pasos-previos}}
+
+Abrimos las librerías necesarias para el análisis.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching core tidyverse packages ------------------------ tidyverse 2.0.0 --
+## v forcats   1.0.0     v readr     2.1.5
+## v ggplot2   3.5.0     v stringr   1.5.1
+## v lubridate 1.9.3     v tibble    3.2.1
+## v purrr     1.0.2     v tidyr     1.3.1
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\end{Highlighting}
+\end{Shaded}
+
+Luego leemos los datos de la encuesta y hacemos una primera vista de
+ellos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{db }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{\textquotesingle{}casen.csv\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{head}\NormalTok{(db)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   region comuna tot_hog tot_per tot_nuc sexo edad ecivil e9te s5 s12 qaut
+## 1      1   1101       1       1       1    2   56      8   NA NA  99    3
+## 2      1   1101       1       1       1    2   21      8   NA NA   8    3
+## 3      1   1101       1       2       1    1   24      2   NA NA  99    4
+## 4      1   1101       1       2       1    1   28      2   NA NA  99    4
+## 5      1   1101       1       3       1    1   26      1   NA 25   2    2
+## 6      1   1101       1       3       1    2   26      1   NA 25   2    2
+\end{verbatim}
+
+\hypertarget{primer-anuxe1lisis}{%
+\subsection{Primer análisis}\label{primer-anuxe1lisis}}
+
+\textbf{a.} Filtramos usando el comando \texttt{filter} de la base de
+datos, sólo las personas de la Región de Magallanes y la Antártica
+Chilena. De acuerdo al Libro de Códigos de la CASEN, esta región
+corresponde al número 12.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{magallanes }\OtherTok{\textless{}{-}} \FunctionTok{filter}\NormalTok{(db, region }\SpecialCharTok{==} \DecValTok{12}\NormalTok{)}
+\FunctionTok{head}\NormalTok{(magallanes)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   region comuna tot_hog tot_per tot_nuc sexo edad ecivil e9te s5 s12 qaut
+## 1     12  12101       1       2       1    1   62      1   NA 23   6    5
+## 2     12  12101       1       2       1    2   61      1   NA 20   6    5
+## 3     12  12101       1       3       1    1   64      1   NA 36   6    5
+## 4     12  12101       1       3       1    2   28      8   NA NA   7    5
+## 5     12  12101       1       3       1    2   55      1  998 27   6    5
+## 6     12  12101       1       2       1    1   49      1   NA NA   6    5
+\end{verbatim}
+
+Luego, usamos la librería \texttt{dplyr} para, en cadena, hacer el
+reporte de mínimo, máximo, media y desviación estándar de la variable
+\texttt{tot\_hog} (número de hogares por vivienda) respecto de
+\texttt{qaut} (quintil autónomo nacional).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{resumen }\OtherTok{\textless{}{-}}\NormalTok{ magallanes }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{group\_by}\NormalTok{(qaut) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Minimo =} \FunctionTok{min}\NormalTok{(tot\_hog),}
+    \AttributeTok{Maximo =} \FunctionTok{max}\NormalTok{(tot\_hog),}
+    \AttributeTok{Media =} \FunctionTok{mean}\NormalTok{(tot\_hog),}
+    \AttributeTok{Desviacion\_Estandar =} \FunctionTok{sd}\NormalTok{(tot\_hog)}
+\NormalTok{  )}
+
+\NormalTok{resumen}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 5
+##    qaut Minimo Maximo Media Desviacion_Estandar
+##   <int>  <int>  <int> <dbl>               <dbl>
+## 1     1      1      3  1.01               0.122
+## 2     2      1      4  1.03               0.223
+## 3     3      1      4  1.02               0.201
+## 4     4      1      4  1.04               0.272
+## 5     5      1      7  1.04               0.341
+## 6    NA      1      1  1                  0
+\end{verbatim}
+
+\textbf{b.} Sin considerar los filtros anteriores, reportamos la edad
+media de las personas al tener su primer hijo. Acá es importante restar
+de la base de datos a quienes aparecen como
+\texttt{NA\textquotesingle{}s}, pues corresponden en su mayoría a
+personas que no (o aún no) tienen hijos.
+
+Primero realizamos una vista de cómo se comportan los datos:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{db}\SpecialCharTok{$}\NormalTok{sexo }\OtherTok{\textless{}{-}} \FunctionTok{as.factor}\NormalTok{(db}\SpecialCharTok{$}\NormalTok{sexo)}
+\FunctionTok{ggplot}\NormalTok{(db, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ s5, }\AttributeTok{fill =}\NormalTok{ sexo)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: Removed 97067 rows containing non-finite outside the scale range
+## (`stat_bin()`).
+\end{verbatim}
+
+\includegraphics{Tarea_2Notebook_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+Esto nos indica que además de los 97067 casos sin edad reportada,
+existen también algunos casos donde la edad se dispara. Generalmente los
+99 también son instancias sin datos, por lo que es necesario verificar
+si se trata de ellos.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{db }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(s5 }\SpecialCharTok{\textgreater{}} \DecValTok{75}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} \CommentTok{\# filtramos por una edad prudente de 75}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{min =} \FunctionTok{min}\NormalTok{(s5),}
+    \AttributeTok{max =} \FunctionTok{max}\NormalTok{(s5),}
+    \AttributeTok{mean =} \FunctionTok{mean}\NormalTok{(s5)}
+\NormalTok{  )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   min max mean
+## 1  99  99   99
+\end{verbatim}
+
+Como se comprobó, que es así, ahora realizamos los filtros que
+corresponden para obtener la media de edad:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{primer\_hijo\_1 }\OtherTok{\textless{}{-}}\NormalTok{ db }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(s5 }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Media\_1 =} \FunctionTok{mean}\NormalTok{(s5, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{)}
+
+\NormalTok{primer\_hijo\_1}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Media_1
+## 1 23.59679
+\end{verbatim}
+
+Ahora filtramos seleccionando todas las mujeres casadas (de acuerdo al
+Libro de Códigos, corresponde al 1) que tuvieron enseñanza básica. En el
+mismo documento corresponde a las siguientes personas110).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{primer\_hijo\_2 }\OtherTok{\textless{}{-}}\NormalTok{ db }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{filter}\NormalTok{(ecivil }\SpecialCharTok{==} \DecValTok{1}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(sexo }\SpecialCharTok{==} \DecValTok{2}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(e9te }\SpecialCharTok{!=} \DecValTok{10}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(e9te }\SpecialCharTok{!=} \DecValTok{77}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(s5 }\SpecialCharTok{!=} \DecValTok{99}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}
+    \AttributeTok{Media\_2 =} \FunctionTok{mean}\NormalTok{(s5, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  )}
+
+\NormalTok{primer\_hijo\_2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Media_2
+## 1 22.11254
+\end{verbatim}
+
+El desarrollo de la
+
+\hypertarget{pregunta-2}{%
+\subsection{Pregunta 2}\label{pregunta-2}}
+
+a.
+
+\end{document}
