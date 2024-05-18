@@ -1,0 +1,16 @@
+---
+title: "**Tarea 3**"
+output: html_notebook
+---
+
+#### **La Belleza de los Datos**
+
+## Pregunta 1
+
+Hola
+
+```{r}
+library(readr)
+library(dplyr)
+library(ggplot2)
+```
