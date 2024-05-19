@@ -52,6 +52,8 @@ Primero creamos una base de datos para trabajar en el problema.
 df <- casen
 ```
 
+### a) Chile
+
 Luego, creamos una variable llamada `totalmin` , que corresponde al total de minutos de trabajo (horas más minutos), y `total_time`, que corresponde al tiempo en formato `ddttmm` (para trabajar en `dplyr`).
 
 ```{r}
@@ -85,8 +87,7 @@ df <- df %>%
 Y realizamos una tabla de calidad:
 
 ```{r}
-
-# Calcular los estadísticos descriptivos
+# calculamos los estadísticos descriptivos
 stats <- df %>%
   summarise(
     Media = mean(totalmin, na.rm = TRUE),
@@ -98,13 +99,90 @@ stats <- df %>%
     Maximo = max(totalmin, na.rm = TRUE)
   )
 
-# Crear una tabla con los estadísticos descriptivos
+# Creamos la tabla para presentarla
 tabla_calidad <- as.data.frame(t(stats))
 colnames(tabla_calidad) <- "Valor"
 tabla_calidad$Estadistico <- rownames(tabla_calidad)
 rownames(tabla_calidad) <- NULL
 
-# Mostrar la tabla usando knitr::kable
+# Mostramos la tabla usando knitr::kable
 kable(tabla_calidad, col.names = c( "Valor", "Estadístico"), caption = "Tabla de Estadísticos Descriptivos de la Variable totalmin. (Fuente: CASEN 2017)")
 
 ```
+
+### a) Región Metropolitana
+
+Utilizamos la misma base de datos `df` , sin embargo, debemos filtrar para la RM, esto es `region=13`
+
+```{r}
+dfRM <- df %>%
+  mutate(region = as.factor(region)) %>%
+  filter(region == 13)
+```
+
+Luego realizamos la misma Tabla de calidad, pero esta vez con el filtro ya hecho.
+
+```{r}
+# calculamos los estadísticos descriptivos
+stats <- dfRM %>%
+  summarise(
+    Media = mean(totalmin, na.rm = TRUE),
+    Mediana = median(totalmin, na.rm = TRUE),
+    Desviacion_estandar = sd(totalmin, na.rm = TRUE),
+    Minimo = min(totalmin, na.rm = TRUE),
+    Primer_cuartil = quantile(totalmin, 0.25, na.rm = TRUE),
+    Tercer_cuartil = quantile(totalmin, 0.75, na.rm = TRUE),
+    Maximo = max(totalmin, na.rm = TRUE)
+  )
+
+# Creamos la tabla para presentarla
+RM <- as.data.frame(t(stats))
+colnames(RM) <- "Valor"
+RM$Estadistico <- rownames(RM)
+rownames(RM) <- NULL
+
+# Mostramos la tabla usando knitr::kable
+kable(RM, col.names = c( "Valor", "Estadístico"), caption = "Tabla de Estadísticos Descriptivos de la Variable totalmin. (Fuente: CASEN 2017)")
+
+```
+
+Respecto de las medias, los tiempos de viaje en la Región Metropolitana son significativamente mayores que a nivel nacional (10 minutos más aproximadamente). Por tanto, los tiempos de viaje al trabajo en esta región son más largos. Esto puede deberse a que existe mayor tráfico en la capital y probablemente también se saturen más los modos de transporte público en horarios de trabajo. Esta tendencia se ve también en los cuartiles (primer cuartil con 5 minutos más y tercer cuartil con 20 minutos más) donde siempre fue superior en la RM.
+
+### b Probabilidades
+
+Se pregunta por la probabilidad de que, siendo mujer y realizando el viaje al menos 5 veces a la semana, la persona encuestada se demore una hora o más en llegar al trabajo.
+
+Primero, mutamos la variable sexo para que sea factor. Luego, filtramos para quienes hacen este viaje 5 veces o más en su semana.
+
+```{r}
+df <- df %>%
+  mutate(sexo = as.factor(sexo)) %>% # factor
+  filter(o25b > 4) # 5 viajes o más
+```
+
+Calculamos el total de mujeres.
+
+```{r}
+total_mujeres <- df %>%
+  filter(sexo == 2) %>%
+  nrow()
+total_mujeres
+```
+
+Luego calculamos el número de mujeres que se demoran 60 min o más en su viaje.
+
+```{r}
+mujeres_60_mas <- df %>%
+  filter(sexo == 2 & totalmin >= 60) %>%
+  nrow()
+mujeres_60_mas
+```
+
+Y obtenemos la proporción
+
+```{r}
+probabilidad <- mujeres_60_mas / total_mujeres
+probabilidad
+```
+
+## Pregunta 2
