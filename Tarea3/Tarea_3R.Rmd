@@ -186,3 +186,47 @@ probabilidad
 ```
 
 ## Pregunta 2
+
+Reiniciamos el estudio con casen
+
+```{r}
+df <- casen
+```
+
+### a) Ocupación
+
+Presentamos una tabla de calidad de frecuencia relativa de las personas ocupadas y no ocupadas de la muestra.
+
+Para ello, debemos considerar quiénes están ocupados y quiénes no. Personas ocupadas las definiremos como (condicional `OR`):
+
+-   Quien trabajó.
+
+-   Quien realizó una actividad no remunerada (como labores de cuidado).
+
+-   Quien está ausente temporalmente de su empleo.
+
+Personas desocupadas como (condicional `AND`):
+
+-   Quien no trabajó.
+
+-   Quien no realizó actividades.
+
+-   Quien no estaba ausente temporalmente en su ocupación.
+
+-   Quien está buscando trabajo remunerado o realizando gestión para iniciar actividad
+
+| Ocupadas                 | No ocupadas                       |
+|--------------------------|-----------------------------------|
+| `o1=1` o `o2=1` o `o3=1` | `o1=2` y `o2=2` y `o3=2` y `o6=1` |
+
+Generamos la variable de ocupación.
+
+```{r}
+df <- df %>%
+  mutate(ocup = case_when(
+    o1 == 2 & o2 == 2 & o3 == 2 & o6 == 1 ~ 2,
+    o1 == 1 | o2 == 1 | o3 == 1 ~ 1,
+    TRUE ~ NA_real_
+  )) %>%
+  mutate(ocup = factor(ocup, levels = c(1,2)))
+```
