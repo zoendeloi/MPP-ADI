@@ -195,9 +195,9 @@ df <- casen
 
 ### a) Ocupación
 
-Presentamos una tabla de calidad de frecuencia relativa de las personas ocupadas y no ocupadas de la muestra.
+Presentamos una tabla de calidad de frecuencia relativa de las personas ocupadas y no ocupadas de la muestra (y también las inactivas para ser consencuente con el formato CASEN).
 
-Para ello, debemos considerar quiénes están ocupados y quiénes no. Personas ocupadas las definiremos como (condicional `OR`):
+Para ello, debemos considerar quiénes están ocupados y quiénes no. Debemos considerar que el nivel de ocupación es sólo para mayores de 15 años. Personas ocupadas las definiremos como (condicional `OR`):
 
 -   Quien trabajó.
 
@@ -215,18 +215,47 @@ Personas desocupadas como (condicional `AND`):
 
 -   Quien está buscando trabajo remunerado o realizando gestión para iniciar actividad
 
-| Ocupadas                 | No ocupadas                       |
-|--------------------------|-----------------------------------|
-| `o1=1` o `o2=1` o `o3=1` | `o1=2` y `o2=2` y `o3=2` y `o6=1` |
+Personas inactivas como (condicional `AND`),
+
+-   Personas que no están ausentes de sus ocupaciones
+
+-   Personas que no buscan trabajo remunerado o iniciar actividad.
+
+| Ocupadas                 | No ocupadas                       | Inactivas       |
+|--------------------------|-----------------------------------|-----------------|
+| `o1=1` o `o2=1` o `o3=1` | `o1=2` y `o2=2` y `o3=2` y `o6=1` | `o3=2` y `o6=2` |
 
 Generamos la variable de ocupación.
 
 ```{r}
 df <- df %>%
   mutate(ocup = case_when(
-    o1 == 2 & o2 == 2 & o3 == 2 & o6 == 1 ~ 2,
-    o1 == 1 | o2 == 1 | o3 == 1 ~ 1,
+    edad>=15 & o1 == 2 & o2 == 2 & o3 == 2 & o6 == 1 ~ 2,
+    edad>=15 & (o1 == 1 | o2 == 1 | o3) == 1 ~ 1,
+    edad>=15 & o3 == 2 & o6 == 2 ~ 3,
     TRUE ~ NA_real_
   )) %>%
-  mutate(ocup = factor(ocup, levels = c(1,2)))
+  mutate(ocup = factor(ocup, levels = c(1, 2, 3))) %>%
+  mutate(ocup = recode(ocup,
+                       `1` = 'Ocupado',
+                       `2` = 'No ocupado',
+                       `3` = 'Inactivo')) %>%
+  mutate(ocup = factor(ocup, levels = c('Ocupado', 'No ocupado', 'Inactivo')))
+
+```
+
+Y generamos la tabla como sigue:
+
+```{r}
+frecuencias <- df %>%
+  filter(!is.na(ocup)) %>%
+  count(ocup) %>%
+  mutate(frecuencia = n / sum(n))
+
+tabla <- frecuencias %>%
+  select(ocup, frecuencia) %>%
+  rename(Ocupación = ocup, 'Frecuencia relativa' = frecuencia)
+
+tabla %>%
+  kable(caption = 'Tabla de Calidad de Frecuencias Relativas de Ocupación (Fuente: CASEN 2017)')
 ```
