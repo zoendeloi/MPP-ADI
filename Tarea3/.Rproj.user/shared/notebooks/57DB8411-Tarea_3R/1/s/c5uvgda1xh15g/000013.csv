@@ -1,0 +1,5 @@
+"0","df <- df %>%"
+"0","  mutate(o1 = as.factor(o1)) %>%"
+"0","  filter(o1 == 1) %>%"
+"0","  filter(o25a_min != 99) %>%"
+"0","  filter(o25a_hr != 99)"

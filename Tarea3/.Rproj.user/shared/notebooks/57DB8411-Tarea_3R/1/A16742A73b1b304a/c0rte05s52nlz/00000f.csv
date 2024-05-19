@@ -1,0 +1,8 @@
+"0","mujeres_60_mas <- df %>%"
+"0","  filter(sexo == 2 & totalmin >= 60) %>%"
+"0","  nrow()"
+"0","mujeres_60_mas"
+"1","[1]"
+"1"," 4422"
+"1","
+"

@@ -1754,21 +1754,233 @@ display: none;
 <!-- rnb-text-begin -->
 <div id="la-belleza-de-los-datos" class="section level4">
 <h4><strong>La Belleza de los Datos</strong></h4>
+<p>Consideramos un extracto de las respuestas de la Encuesta CASEN 2017,
+adjuntas en la siguiente tabla:</p>
+<table>
+<caption>Tabla 1. Variables a utilizar de la encuesta CASEN
+2017</caption>
+<thead>
+<tr class="header">
+<th>Variables</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>region</code></td>
+<td>Número de la región</td>
+</tr>
+<tr class="even">
+<td><code>sexo</code></td>
+<td>1 (hombre), 2 (mujer)</td>
+</tr>
+<tr class="odd">
+<td><code>edad</code></td>
+<td>Edad en años</td>
+</tr>
+<tr class="even">
+<td><code>e_civil</code></td>
+<td>Estado civil</td>
+</tr>
+<tr class="odd">
+<td><code>o1</code></td>
+<td>Trabajó al menos una hora</td>
+</tr>
+<tr class="even">
+<td><code>o2</code></td>
+<td>Actividad de al menos una hora</td>
+</tr>
+<tr class="odd">
+<td><code>o3</code></td>
+<td>Ausencia temporal al empleo</td>
+</tr>
+<tr class="even">
+<td><code>o6</code></td>
+<td>Búsqueda de trabajo</td>
+</tr>
+<tr class="odd">
+<td><code>o25a_hr</code></td>
+<td>Horas que tarda en viaje al trabajo</td>
+</tr>
+<tr class="even">
+<td><code>o25a_min</code></td>
+<td>Minutos que tarda en viaje al trabajo</td>
+</tr>
+<tr class="odd">
+<td><code>o25b</code></td>
+<td>Veces a la semana en que realiza el viaje</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="preparación-de-entorno" class="section level2">
+<h2>Preparación de entorno</h2>
+<p>Iniciación de librerías</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGdncGxvdDIpXG5saWJyYXJ5KHRpZHlyKVxubGlicmFyeShrbml0cilcbmBgYCJ9 -->
+<pre class="r"><code>library(readr)
+library(dplyr)
+library(ggplot2)
+library(tidyr)
+library(knitr)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Abrir la base de datos</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FzZW4gPC0gcmVhZF9jc3YoXCJUYXJlYV8zX2Nhc2VuLmNzdlwiKVxuYGBgIn0= -->
+<pre class="r"><code>casen &lt;- read_csv(&quot;Tarea_3_casen.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMjE2NDM5IENvbHVtbnM6IDEyXG7ilIDilIAgQ29sdW1uIHNwZWNpZmljYXRpb24g4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSAXG5EZWxpbWl0ZXI6IFwiLFwiXG5kYmwgKDEyKTogcmVnaW9uLCBleHBjLCBzZXhvLCBlZGFkLCBlY2l2aWwsIG8xLCBvMiwgbzMsIG82LCBvMjVhX2hyLCBvMjVhX21pbiwgbzI1YlxuXG7ihLkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG7ihLkgU3BlY2lmeSB0aGUgY29sdW1uIHR5cGVzIG9yIHNldCBgc2hvd19jb2xfdHlwZXMgPSBGQUxTRWAgdG8gcXVpZXQgdGhpcyBtZXNzYWdlLlxuIn0= -->
+<pre><code>Rows: 216439 Columns: 12
+── Column specification ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+dbl (12): region, expc, sexo, edad, ecivil, o1, o2, o3, o6, o25a_hr, o25a_min, o25b
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhUYXJlYV8zX2Nhc2VuKVxuYGBgIn0= -->
+<pre class="r"><code>View(Tarea_3_casen)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="pregunta-1" class="section level2">
 <h2>Pregunta 1</h2>
-<p>Hola</p>
+<p>Presentamos en una tabla de calidad los estadísticos descriptivos del
+tiempo de viaje al trabajo.</p>
+<p>Primero creamos una base de datos para trabajar en el problema.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShyZWFkcilcbmxpYnJhcnkoZHBseXIpXG5saWJyYXJ5KGdncGxvdDIpXG5gYGAifQ== -->
-<pre class="r"><code>library(readr)
-library(dplyr)
-library(ggplot2)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gY2FzZW5cbmBgYCJ9 -->
+<pre class="r"><code>df &lt;- casen</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Luego, creamos una variable llamada <code>totalmin</code> , que
+corresponde al total de minutos de trabajo (horas más minutos), y
+<code>total_time</code>, que corresponde al tiempo en formato
+<code>ddttmm</code> (para trabajar en <code>dplyr</code>).</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZShcbiAgICB0b3RhbG1pbiA9IGlmZWxzZShpcy5uYShvMjVhX2hyKSxcbiAgICAgICAgICAgICAgICAgICAgICAwLFxuICAgICAgICAgICAgICAgICAgICAgIG8yNWFfaHIgKiA2MCkgKyBpZmVsc2UoaXMubmEobzI1YV9taW4pLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMCxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG8yNWFfbWluKVxuICApXG5taW51dGVzX3RvX2hobW0gPC0gZnVuY3Rpb24obWludXRlcykge1xuICBob3VycyA8LSBmbG9vcihtaW51dGVzIC8gNjApXG4gIG1pbnMgPC0gbWludXRlcyAlJSA2MFxuICBzcHJpbnRmKFwiJTAyZDolMDJkXCIsIGhvdXJzLCBtaW5zKVxufVxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZSh0b3RhbF90aW1lID0gc2FwcGx5KHRvdGFsbWluLCBtaW51dGVzX3RvX2hobW0pKVxuYGBgIn0= -->
+<pre class="r"><code>df &lt;- df %&gt;%
+  mutate(
+    totalmin = ifelse(is.na(o25a_hr),
+                      0,
+                      o25a_hr * 60) + ifelse(is.na(o25a_min),
+                                             0,
+                                             o25a_min)
+  )
+minutes_to_hhmm &lt;- function(minutes) {
+  hours &lt;- floor(minutes / 60)
+  mins &lt;- minutes %% 60
+  sprintf(&quot;%02d:%02d&quot;, hours, mins)
+}
+df &lt;- df %&gt;%
+  mutate(total_time = sapply(totalmin, minutes_to_hhmm))</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Luego, filtramos la base de datos df para las personas que trabajaron
+al menos una hora. Esto es, o1=1. También filtramos para las instancias
+donde el tiempo de viaje (<code>o25a_min</code> y <code>o25a_hr</code>)
+son 99, porque de la tarea anterior también sabemos que son
+<code>NAs</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGYgPC0gZGYgJT4lXG4gIG11dGF0ZShvMSA9IGFzLmZhY3RvcihvMSkpICU+JVxuICBmaWx0ZXIobzEgPT0gMSkgJT4lXG4gIGZpbHRlcihvMjVhX21pbiAhPSA5OSkgJT4lXG4gIGZpbHRlcihvMjVhX2hyICE9IDk5KVxuYGBgIn0= -->
+<pre class="r"><code>df &lt;- df %&gt;%
+  mutate(o1 = as.factor(o1)) %&gt;%
+  filter(o1 == 1) %&gt;%
+  filter(o25a_min != 99) %&gt;%
+  filter(o25a_hr != 99)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Y realizamos una tabla de calidad:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIENhbGN1bGFyIGxvcyBlc3RhZMOtc3RpY29zIGRlc2NyaXB0aXZvc1xuc3RhdHMgPC0gZGYgJT4lXG4gIHN1bW1hcmlzZShcbiAgICBNZWRpYSA9IG1lYW4odG90YWxtaW4sIG5hLnJtID0gVFJVRSksXG4gICAgTWVkaWFuYSA9IG1lZGlhbih0b3RhbG1pbiwgbmEucm0gPSBUUlVFKSxcbiAgICBEZXN2aWFjaW9uX2VzdGFuZGFyID0gc2QodG90YWxtaW4sIG5hLnJtID0gVFJVRSksXG4gICAgTWluaW1vID0gbWluKHRvdGFsbWluLCBuYS5ybSA9IFRSVUUpLFxuICAgIFByaW1lcl9jdWFydGlsID0gcXVhbnRpbGUodG90YWxtaW4sIDAuMjUsIG5hLnJtID0gVFJVRSksXG4gICAgVGVyY2VyX2N1YXJ0aWwgPSBxdWFudGlsZSh0b3RhbG1pbiwgMC43NSwgbmEucm0gPSBUUlVFKSxcbiAgICBNYXhpbW8gPSBtYXgodG90YWxtaW4sIG5hLnJtID0gVFJVRSlcbiAgKVxuXG4jIENyZWFyIHVuYSB0YWJsYSBjb24gbG9zIGVzdGFkw61zdGljb3MgZGVzY3JpcHRpdm9zXG50YWJsYV9jYWxpZGFkIDwtIGFzLmRhdGEuZnJhbWUodChzdGF0cykpXG5jb2xuYW1lcyh0YWJsYV9jYWxpZGFkKSA8LSBcIlZhbG9yXCJcbnRhYmxhX2NhbGlkYWQkRXN0YWRpc3RpY28gPC0gcm93bmFtZXModGFibGFfY2FsaWRhZClcbnJvd25hbWVzKHRhYmxhX2NhbGlkYWQpIDwtIE5VTExcblxuIyBNb3N0cmFyIGxhIHRhYmxhIHVzYW5kbyBrbml0cjo6a2FibGVcbmthYmxlKHRhYmxhX2NhbGlkYWQsIGNvbC5uYW1lcyA9IGMoIFwiVmFsb3JcIiwgXCJFc3RhZMOtc3RpY29cIiksIGNhcHRpb24gPSBcIlRhYmxhIGRlIEVzdGFkw61zdGljb3MgRGVzY3JpcHRpdm9zIGRlIGxhIFZhcmlhYmxlIHRvdGFsbWluLiAoRnVlbnRlOiBDQVNFTiAyMDE3KVwiKVxuYGBgIn0= -->
+<pre class="r"><code>
+# Calcular los estadísticos descriptivos
+stats &lt;- df %&gt;%
+  summarise(
+    Media = mean(totalmin, na.rm = TRUE),
+    Mediana = median(totalmin, na.rm = TRUE),
+    Desviacion_estandar = sd(totalmin, na.rm = TRUE),
+    Minimo = min(totalmin, na.rm = TRUE),
+    Primer_cuartil = quantile(totalmin, 0.25, na.rm = TRUE),
+    Tercer_cuartil = quantile(totalmin, 0.75, na.rm = TRUE),
+    Maximo = max(totalmin, na.rm = TRUE)
+  )
+
+# Crear una tabla con los estadísticos descriptivos
+tabla_calidad &lt;- as.data.frame(t(stats))
+colnames(tabla_calidad) &lt;- &quot;Valor&quot;
+tabla_calidad$Estadistico &lt;- rownames(tabla_calidad)
+rownames(tabla_calidad) &lt;- NULL
+
+# Mostrar la tabla usando knitr::kable
+kable(tabla_calidad, col.names = c( &quot;Valor&quot;, &quot;Estadístico&quot;), caption = &quot;Tabla de Estadísticos Descriptivos de la Variable totalmin. (Fuente: CASEN 2017)&quot;)</code></pre>
+<!-- rnb-source-end -->
+
+<!-- rnb-html-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImtuaXRfYXNpcyJdLCJzaXppbmdQb2xpY3kiOltdfX0= -->
+
+<table>
+<caption>Tabla de Estadísticos Descriptivos de la Variable totalmin.
+(Fuente: CASEN 2017)</caption>
+<thead>
+<tr class="header">
+<th align="right">Valor</th>
+<th align="left">Estadístico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">30.12542</td>
+<td align="left">Media</td>
+</tr>
+<tr class="even">
+<td align="right">20.00000</td>
+<td align="left">Mediana</td>
+</tr>
+<tr class="odd">
+<td align="right">31.25440</td>
+<td align="left">Desviacion_estandar</td>
+</tr>
+<tr class="even">
+<td align="right">0.00000</td>
+<td align="left">Minimo</td>
+</tr>
+<tr class="odd">
+<td align="right">10.00000</td>
+<td align="left">Primer_cuartil</td>
+</tr>
+<tr class="even">
+<td align="right">40.00000</td>
+<td align="left">Tercer_cuartil</td>
+</tr>
+<tr class="odd">
+<td align="right">239.00000</td>
+<td align="left">Maximo</td>
+</tr>
+</tbody>
+</table>
+
+
+<!-- rnb-html-end -->
+
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTkFcbmBgYCJ9 -->
+<pre class="r"><code>NA</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIioqVGFyZWEgMyoqIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMjIyAqKkxhIEJlbGxlemEgZGUgbG9zIERhdG9zKioNCg0KIyMgUHJlZ3VudGEgMQ0KDQpIb2xhDQoNCmBgYHtyfQ0KbGlicmFyeShyZWFkcikNCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KGdncGxvdDIpDQpgYGANCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIioqVGFyZWEgMyoqIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMjIyAqKkxhIEJlbGxlemEgZGUgbG9zIERhdG9zKioNCg0KQ29uc2lkZXJhbW9zIHVuIGV4dHJhY3RvIGRlIGxhcyByZXNwdWVzdGFzIGRlIGxhIEVuY3Vlc3RhIENBU0VOIDIwMTcsIGFkanVudGFzIGVuIGxhIHNpZ3VpZW50ZSB0YWJsYToNCg0KfCBWYXJpYWJsZXMgIHwgRGVzY3JpcGNpw7NuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwtLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCnwgYHJlZ2lvbmAgICB8IE7Dum1lcm8gZGUgbGEgcmVnacOzbiAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBgc2V4b2AgICAgIHwgMSAoaG9tYnJlKSwgMiAobXVqZXIpICAgICAgICAgICAgICAgICAgICAgfA0KfCBgZWRhZGAgICAgIHwgRWRhZCBlbiBhw7FvcyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYGVfY2l2aWxgICB8IEVzdGFkbyBjaXZpbCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYG8xYCAgICAgICB8IFRyYWJhasOzIGFsIG1lbm9zIHVuYSBob3JhICAgICAgICAgICAgICAgICB8DQp8IGBvMmAgICAgICAgfCBBY3RpdmlkYWQgZGUgYWwgbWVub3MgdW5hIGhvcmEgICAgICAgICAgICB8DQp8IGBvM2AgICAgICAgfCBBdXNlbmNpYSB0ZW1wb3JhbCBhbCBlbXBsZW8gICAgICAgICAgICAgICB8DQp8IGBvNmAgICAgICAgfCBCw7pzcXVlZGEgZGUgdHJhYmFqbyAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBgbzI1YV9ocmAgIHwgSG9yYXMgcXVlIHRhcmRhIGVuIHZpYWplIGFsIHRyYWJham8gICAgICAgfA0KfCBgbzI1YV9taW5gIHwgTWludXRvcyBxdWUgdGFyZGEgZW4gdmlhamUgYWwgdHJhYmFqbyAgICAgfA0KfCBgbzI1YmAgICAgIHwgVmVjZXMgYSBsYSBzZW1hbmEgZW4gcXVlIHJlYWxpemEgZWwgdmlhamUgfA0KDQo6IFRhYmxhIDEuIFZhcmlhYmxlcyBhIHV0aWxpemFyIGRlIGxhIGVuY3Vlc3RhIENBU0VOIDIwMTcNCg0KIyMgUHJlcGFyYWNpw7NuIGRlIGVudG9ybm8NCg0KSW5pY2lhY2nDs24gZGUgbGlicmVyw61hcw0KDQpgYGB7cn0NCmxpYnJhcnkocmVhZHIpDQpsaWJyYXJ5KGRwbHlyKQ0KbGlicmFyeShnZ3Bsb3QyKQ0KbGlicmFyeSh0aWR5cikNCmxpYnJhcnkoa25pdHIpDQpgYGANCg0KQWJyaXIgbGEgYmFzZSBkZSBkYXRvcw0KDQpgYGB7cn0NCmNhc2VuIDwtIHJlYWRfY3N2KCJUYXJlYV8zX2Nhc2VuLmNzdiIpDQpWaWV3KGNhc2VuKQ0KYGBgDQoNCiMjIFByZWd1bnRhIDENCg0KUHJlc2VudGFtb3MgZW4gdW5hIHRhYmxhIGRlIGNhbGlkYWQgbG9zIGVzdGFkw61zdGljb3MgZGVzY3JpcHRpdm9zIGRlbCB0aWVtcG8gZGUgdmlhamUgYWwgdHJhYmFqby4NCg0KUHJpbWVybyBjcmVhbW9zIHVuYSBiYXNlIGRlIGRhdG9zIHBhcmEgdHJhYmFqYXIgZW4gZWwgcHJvYmxlbWEuDQoNCmBgYHtyfQ0KZGYgPC0gY2FzZW4NCmBgYA0KDQpMdWVnbywgY3JlYW1vcyB1bmEgdmFyaWFibGUgbGxhbWFkYSBgdG90YWxtaW5gICwgcXVlIGNvcnJlc3BvbmRlIGFsIHRvdGFsIGRlIG1pbnV0b3MgZGUgdHJhYmFqbyAoaG9yYXMgbcOhcyBtaW51dG9zKSwgeSBgdG90YWxfdGltZWAsIHF1ZSBjb3JyZXNwb25kZSBhbCB0aWVtcG8gZW4gZm9ybWF0byBgZGR0dG1tYCAocGFyYSB0cmFiYWphciBlbiBgZHBseXJgKS4NCg0KYGBge3J9DQpkZiA8LSBkZiAlPiUNCiAgbXV0YXRlKA0KICAgIHRvdGFsbWluID0gaWZlbHNlKGlzLm5hKG8yNWFfaHIpLA0KICAgICAgICAgICAgICAgICAgICAgIDAsDQogICAgICAgICAgICAgICAgICAgICAgbzI1YV9ociAqIDYwKSArIGlmZWxzZShpcy5uYShvMjVhX21pbiksDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbzI1YV9taW4pDQogICkNCm1pbnV0ZXNfdG9faGhtbSA8LSBmdW5jdGlvbihtaW51dGVzKSB7DQogIGhvdXJzIDwtIGZsb29yKG1pbnV0ZXMgLyA2MCkNCiAgbWlucyA8LSBtaW51dGVzICUlIDYwDQogIHNwcmludGYoIiUwMmQ6JTAyZCIsIGhvdXJzLCBtaW5zKQ0KfQ0KZGYgPC0gZGYgJT4lDQogIG11dGF0ZSh0b3RhbF90aW1lID0gc2FwcGx5KHRvdGFsbWluLCBtaW51dGVzX3RvX2hobW0pKQ0KYGBgDQoNCkx1ZWdvLCBmaWx0cmFtb3MgbGEgYmFzZSBkZSBkYXRvcyBkZiBwYXJhIGxhcyBwZXJzb25hcyBxdWUgdHJhYmFqYXJvbiBhbCBtZW5vcyB1bmEgaG9yYS4gRXN0byBlcywgbzE9MS4gVGFtYmnDqW4gZmlsdHJhbW9zIHBhcmEgbGFzIGluc3RhbmNpYXMgZG9uZGUgZWwgdGllbXBvIGRlIHZpYWplIChgbzI1YV9taW5gIHkgYG8yNWFfaHJgKSBzb24gOTksIHBvcnF1ZSBkZSBsYSB0YXJlYSBhbnRlcmlvciB0YW1iacOpbiBzYWJlbW9zIHF1ZSBzb24gYE5Bc2AuDQoNCmBgYHtyfQ0KZGYgPC0gZGYgJT4lDQogIG11dGF0ZShvMSA9IGFzLmZhY3RvcihvMSkpICU+JQ0KICBmaWx0ZXIobzEgPT0gMSkgJT4lDQogIGZpbHRlcihvMjVhX21pbiAhPSA5OSkgJT4lDQogIGZpbHRlcihvMjVhX2hyICE9IDk5KQ0KYGBgDQoNClkgcmVhbGl6YW1vcyB1bmEgdGFibGEgZGUgY2FsaWRhZDoNCg0KYGBge3J9DQoNCiMgQ2FsY3VsYXIgbG9zIGVzdGFkw61zdGljb3MgZGVzY3JpcHRpdm9zDQpzdGF0cyA8LSBkZiAlPiUNCiAgc3VtbWFyaXNlKA0KICAgIE1lZGlhID0gbWVhbih0b3RhbG1pbiwgbmEucm0gPSBUUlVFKSwNCiAgICBNZWRpYW5hID0gbWVkaWFuKHRvdGFsbWluLCBuYS5ybSA9IFRSVUUpLA0KICAgIERlc3ZpYWNpb25fZXN0YW5kYXIgPSBzZCh0b3RhbG1pbiwgbmEucm0gPSBUUlVFKSwNCiAgICBNaW5pbW8gPSBtaW4odG90YWxtaW4sIG5hLnJtID0gVFJVRSksDQogICAgUHJpbWVyX2N1YXJ0aWwgPSBxdWFudGlsZSh0b3RhbG1pbiwgMC4yNSwgbmEucm0gPSBUUlVFKSwNCiAgICBUZXJjZXJfY3VhcnRpbCA9IHF1YW50aWxlKHRvdGFsbWluLCAwLjc1LCBuYS5ybSA9IFRSVUUpLA0KICAgIE1heGltbyA9IG1heCh0b3RhbG1pbiwgbmEucm0gPSBUUlVFKQ0KICApDQoNCiMgQ3JlYXIgdW5hIHRhYmxhIGNvbiBsb3MgZXN0YWTDrXN0aWNvcyBkZXNjcmlwdGl2b3MNCnRhYmxhX2NhbGlkYWQgPC0gYXMuZGF0YS5mcmFtZSh0KHN0YXRzKSkNCmNvbG5hbWVzKHRhYmxhX2NhbGlkYWQpIDwtICJWYWxvciINCnRhYmxhX2NhbGlkYWQkRXN0YWRpc3RpY28gPC0gcm93bmFtZXModGFibGFfY2FsaWRhZCkNCnJvd25hbWVzKHRhYmxhX2NhbGlkYWQpIDwtIE5VTEwNCg0KIyBNb3N0cmFyIGxhIHRhYmxhIHVzYW5kbyBrbml0cjo6a2FibGUNCmthYmxlKHRhYmxhX2NhbGlkYWQsIGNvbC5uYW1lcyA9IGMoICJWYWxvciIsICJFc3RhZMOtc3RpY28iKSwgY2FwdGlvbiA9ICJUYWJsYSBkZSBFc3RhZMOtc3RpY29zIERlc2NyaXB0aXZvcyBkZSBsYSBWYXJpYWJsZSB0b3RhbG1pbi4gKEZ1ZW50ZTogQ0FTRU4gMjAxNykiKQ0KDQpgYGANCg==</div>
 
 
 

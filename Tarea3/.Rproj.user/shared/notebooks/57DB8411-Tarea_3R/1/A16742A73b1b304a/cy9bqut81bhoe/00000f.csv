@@ -1,0 +1,3 @@
+"0","df <- df %>%"
+"0","  mutate(sexo = as.factor(sexo)) %>% # factor"
+"0","  filter(o25b > 4) # 5 viajes o más"

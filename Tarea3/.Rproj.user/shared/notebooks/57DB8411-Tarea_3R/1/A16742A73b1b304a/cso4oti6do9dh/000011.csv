@@ -1,0 +1,3 @@
+"0","dfRM <- df %>%"
+"0","  mutate(region = as.factor(region)) %>%"
+"0","  filter(region == 13)"
