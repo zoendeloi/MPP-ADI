@@ -248,8 +248,8 @@ Y generamos la tabla como sigue:
 
 ```{r}
 frecuencias <- df %>%
-  filter(!is.na(ocup)) %>%
-  count(ocup) %>%
+  filter(!is.na(ocup)) %>% #filtramos las que no aplican
+  count(ocup) %>% # contamos
   mutate(frecuencia = n / sum(n))
 
 tabla <- frecuencias %>%
@@ -259,3 +259,102 @@ tabla <- frecuencias %>%
 tabla %>%
   kable(caption = 'Tabla de Calidad de Frecuencias Relativas de Ocupación (Fuente: CASEN 2017)')
 ```
+
+### b) Ocupación por edad
+
+Primero, filtramos por la edad para que corresponda al caso
+
+```{r}
+df <- df %>%
+  filter(!is.na(ocup))
+
+```
+
+Y hacemos la tabla
+
+```{r}
+tabla_calidad <- df %>%
+  group_by(ocup) %>%
+  summarise(
+    Media = mean(edad, na.rm = TRUE),
+    Mediana = median(edad, na.rm = TRUE),
+    Desviacion_estandar = sd(edad, na.rm = TRUE),
+    Minimo = min(edad, na.rm = TRUE),
+    Primer_cuartil = quantile(edad, 0.25, na.rm = TRUE),
+    Tercer_cuartil = quantile(edad, 0.75, na.rm = TRUE),
+    Maximo = max(edad, na.rm = TRUE)
+  )
+
+tabla_calidad <- tabla_calidad %>% #trasponemos porque quedaba muy desordenada 
+  pivot_longer(cols = -ocup, names_to = "Estadístico", values_to = "Valor") %>%
+  pivot_wider(names_from = ocup, values_from = Valor)
+
+colnames(tabla_calidad) <- c('Estadístico',
+                             'Ocupado',
+                             'No ocupado')
+
+tabla_calidad %>%
+  kable(caption = 'Estadísticos Descriptivos de la Edad por Ocupación')
+```
+
+## Bonus
+
+### a) Histograma
+
+Presentamos en un histograma la distribución de tiempos de viaje de las personas ocupadas de la muestra como sigue.
+
+```{r}
+df <- casen # reiniciamos el análisis
+df <- df %>%
+  mutate(
+    totalmin = ifelse(is.na(o25a_hr),
+                      0,
+                      o25a_hr * 60) + ifelse(is.na(o25a_min),
+                                             0,
+                                             o25a_min)
+  )
+minutes_to_hhmm <- function(minutes) {
+  hours <- floor(minutes / 60)
+  mins <- minutes %% 60
+  sprintf("%02d:%02d", hours, mins)
+}
+df <- df %>%
+  mutate(o1 = as.factor(o1)) %>%
+  filter(o1 == 1) %>%
+  filter(o25a_min != 99) %>%
+  filter(o25a_hr != 99) %>%
+  mutate(total_time = sapply(totalmin, minutes_to_hhmm)) %>%
+  mutate(ocup = case_when(
+    edad>=15 & o1 == 2 & o2 == 2 & o3 == 2 & o6 == 1 ~ 2,
+    edad>=15 & (o1 == 1 | o2 == 1 | o3) == 1 ~ 1,
+    edad>=15 & o3 == 2 & o6 == 2 ~ 3,
+    TRUE ~ NA_real_
+  )) %>%
+  mutate(ocup = factor(ocup,
+                       levels = c(1, 2, 3))) %>%
+  mutate(ocup = recode(ocup,
+                       `1` = 'Ocupado',
+                       `2` = 'No ocupado',
+                       `3` = 'Inactivo')) %>%
+  mutate(ocup = factor(ocup,
+                       levels = c('Ocupado',
+                                  'No ocupado',
+                                  'Inactivo'))) %>%
+  filter(ocup == 'Ocupado')
+
+```
+
+```{r}
+ggplot(df, aes(x=totalmin,)) +
+  geom_histogram(binwidth = 5,
+                 position = "identity",
+                 alpha = 0.7) +
+  labs(title = "Histograma de Tiempos de Viaje",
+       x = "Tiempo de Viaje (minutos)",
+       y = "Frecuencia") +
+  theme_minimal()
+```
+
+### b) No alcanzo
+
+Disponible en [GitHub](https://github.com/zoendeloi/MPP-ADI/tree/main/Tarea3 "Tarea 3")

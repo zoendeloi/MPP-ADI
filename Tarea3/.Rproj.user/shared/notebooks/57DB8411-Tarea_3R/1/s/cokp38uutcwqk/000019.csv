@@ -1,0 +1,8 @@
+"0","ggplot(df, aes(x=totalmin,)) +"
+"0","  geom_histogram(binwidth = 5,"
+"0","                 position = ""identity"","
+"0","                 alpha = 0.7) +"
+"0","  labs(title = ""Histograma de Tiempos de Viaje"","
+"0","       x = ""Tiempo de Viaje (minutos)"","
+"0","       y = ""Frecuencia"") +"
+"0","  theme_minimal()"

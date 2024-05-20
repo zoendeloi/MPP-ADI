@@ -1,0 +1,4 @@
+"0","df <- df %>%"
+"0","  filter(!is.na(ocup))"
+"0",""
+"0","head(df)"
